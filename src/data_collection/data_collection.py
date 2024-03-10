@@ -23,7 +23,7 @@ def perform_countdown(cap, countdown_duration, output_string):
             break
 
 
-actions = np.array(['hello', 'thankyou', 'iloveyou'])
+actions = np.array(['hello', 'thanks', 'iloveyou'])
 num_sequences = 30
 num_frames = 30
 
@@ -34,7 +34,6 @@ for action in actions:
         except:
             pass
 cap = cv.VideoCapture(0)
-# exit_loop = perform_countdown(cap=cap, countdown_duration=3, output_string="TESTING 1")
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
     for action in actions:
         perform_countdown(cap, 3, f'{action} Sequence: 0')
@@ -43,12 +42,15 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 if frame_num == 0:
                     perform_countdown(cap, 2, f'{action}: {sequence}')
                 valid_frame, frame = cap.read()
-                frame = cv.flip(frame, 1)
                 image, results = process_mp(frame, holistic)
                 keypoints = extract_keypoints(results)
+                if(keypoints.shape != (1704,)):
+                    print("INCORRECT KEYPOINT SHAPE")
+                    quit()
                 npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
                 np.save(npy_path, keypoints)
                 draw_landmarks(image, results)
+                image = cv.flip(image, 1)
                 cv.putText(image, 'action: {} sequence: {} frame_num: {}'.format(action, sequence, frame_num), (15, 12),
                             cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 225), 1, cv.LINE_AA)
                 cv.imshow('TESTING', image)
