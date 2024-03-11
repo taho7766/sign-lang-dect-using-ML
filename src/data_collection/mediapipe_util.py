@@ -52,14 +52,14 @@ def extract_keypoints(results):
         right_hand_landmark_points = np.zeros(21 * 4)
 
     if results.left_hand_landmarks:
-        left_hand_landmark_points = np.array([[res.x, res.y, res.z, res.visibility] for res in results.left_hand_landmarks.landmark]).flatten()
+        left_hand_landmark_points = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten()
     else:
-        left_hand_landmark_points = np.zeros(21 * 4)
+        left_hand_landmark_points = np.zeros(21 * 3)
         
     if results.pose_landmarks:
-        pose_landmark_points = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten()
+        pose_landmark_points = np.array([[res.x, res.y, res.z] for res in results.pose_landmarks.landmark]).flatten()
     else:
-        pose_landmark_points = np.zeros(33 * 4)
+        pose_landmark_points = np.zeros(33 * 3)
 
     if results.face_landmarks:
         face_landmark_points = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten()

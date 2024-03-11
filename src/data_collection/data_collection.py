@@ -44,9 +44,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 valid_frame, frame = cap.read()
                 image, results = process_mp(frame, holistic)
                 keypoints = extract_keypoints(results)
-                if(keypoints.shape != (1704,)):
-                    print("INCORRECT KEYPOINT SHAPE")
-                    quit()
+                print(keypoints.shape)
                 npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
                 np.save(npy_path, keypoints)
                 draw_landmarks(image, results)

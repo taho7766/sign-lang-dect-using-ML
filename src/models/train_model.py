@@ -1,21 +1,19 @@
 import numpy as np
 import os
+import shutil
 from model_archetecture import create_model
-from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import TensorBoard, EarlyStopping, ModelCheckpoint, Callback
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import load_model
+
+class CustomCallback(Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        if logs.get('categorical_accuracy') >= 0.95:
+            print('\nReached 95% accuracy so cancelling training!')
+            self.model.stop_training = True
+
 
 PROCESSED_PATH = '../../MP_DATA/PROCESSED_DATA'
-accuracy_threshhold = 0.95
-min_epoch = 200
-
-early_stop = EarlyStopping(monitor='categorical_accuracy', mode='max',
-                           patience=10,
-                           restore_best_weights=True,
-                           min_delta=0.001,
-                           baseline=accuracy_threshhold)
-
-model_checkpoint = ModelCheckpoint(filepath='best_model.h5', monitor='categorical_accuracy',
-                                   mode='max', save_best_only=True, save_weights_only=True)
 
 X = np.load(os.path.join(PROCESSED_PATH, 'X.npy'))
 Y = np.load(os.path.join(PROCESSED_PATH, 'Y.npy'))
@@ -26,10 +24,27 @@ tb_callback = TensorBoard(log_dir=log_path)
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.05)
 
-model = create_model(30, 1704, actions.shape[0])
+# from sklearn.metrics import accuracy_score, multilabel_confusion_matrix
+
+# model = load_model('/Users/taewoohong/dev/git/sign-lang-dect-using-ML/src/models/interrupted_model.h5')
+
+# yhat = model.predict(X_train)
+
+# ytrue = np.argmax(Y_train, axis=1).tolist()
+# yhat = np.argmax(yhat, axis=1).tolist()
+
+# print(multilabel_confusion_matrix(ytrue, yhat))
+# print(accuracy_score(ytrue, yhat))
+custom_callback = CustomCallback()
+
+model = create_model(30, 1650, actions.shape[0])
 model.compile(optimizer= 'adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 try:
-    model.fit(X_train, Y_train, epochs=2000, callbacks=[tb_callback])
+    model.fit(X_train,
+              Y_train,
+              epochs=2000,
+              callbacks=[tb_callback, custom_callback])
 except KeyboardInterrupt:
     model.save('interrupted_model.h5')
     print('Training interrupted and model saved.')
+model.save('interrupted_model.h5')
