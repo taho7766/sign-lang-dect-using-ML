@@ -69,8 +69,9 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
         # if(len(sentence) > 5):
         #     sentence = sentence[-5:]
         
+        height, width = image.shape[:2]
         
-        cv.rectangle(image, (0, 0), (640, 40), (245, 177, 16), -1)
+        cv.rectangle(image, (0, 0), (width, 40), (155, 100, 45), -1)
         cv.putText(image, ' '.join(sentence), (3, 30),
                    cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
         cv.imshow('testing', image)
