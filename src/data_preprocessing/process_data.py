@@ -4,7 +4,7 @@ from tensorflow.keras.utils import to_categorical
 
 DATA_PATH = "../../MP_DATA"
 PROCESSED_PATH = os.path.join(DATA_PATH, "PROCESSED_DATA")
-actions = np.array(['hello', 'iloveyou', 'thanks'])
+actions = np.array(['hello', 'thanks', 'iloveyou'])
 no_sequences = 30
 sequence_length = 30
 

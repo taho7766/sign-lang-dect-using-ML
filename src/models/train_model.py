@@ -30,7 +30,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.05)
 
 # yhat = model.predict(X_train)
 
-# ytrue = np.argmax(Y_train, axis=1).tolist()
+# ytrue = np.argmax(Y_train, axis=1).tolist()q
 # yhat = np.argmax(yhat, axis=1).tolist()
 
 # print(multilabel_confusion_matrix(ytrue, yhat))
